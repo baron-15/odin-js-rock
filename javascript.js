@@ -10,31 +10,53 @@ function computerPlay() {
     else {
         computerChoise = "scissors";
     }
-    console.log(`Computer selected "${computerChoise}".`);
+    return computerChoise;
 }
 
-function playRound(playerSelection, computerSelection) {
-    if (playerSelection != "rock" && playerSelection != "paper" && playerSelection != "scissors") {
-        return `${playerSelection} is an invalid entry`;
-    }
-    else if (computerChoise == playerSelection) {
-        return `You selected ${playerSelection}. It's a tie!`;
+function playRound(playerSelection) {
+    computerSelection = computerPlay();
+    if (computerChoise == playerSelection) {
+        tieScore ++;
+        return `You selected "${playerSelection}". Computer selected "${computerChoise}". It's a tie!`;
     }
     else if ((computerChoise == "rock" && playerSelection == "paper") || (computerChoise == "paper" && playerSelection == "scissors") || (computerChoise == "scissors" && playerSelection == "rock")) {
-        return `You selected ${playerSelection}. You beat the computer!`;
+        playerScore ++;
+        return `You selected "${playerSelection}". Computer selected "${computerChoise}". You beat the computer!`;
     }
     else {
-        return `You selected ${playerSelection}. The computer beat you!`;
+        computerScore++;
+        return `You selected "${playerSelection}". Computer selected "${computerChoise}". The computer beat you!`;
     }
   }
   
-  function game(){
-    for (let i = 0; i < 5; i++) {
-        let playerSelection = prompt("Rock, Paper or Scissors?");
-        playerSelection = playerSelection.toLowerCase();
-        computerSelection = computerPlay();
-        console.log(playRound(playerSelection, computerSelection));
-     }
-  }
+  function oneGame(playerSelection, gameCount){
+        if (gameCount >5) {
+            content.textContent = `Best of 5 so game is over.`;
+            result.textContent = ``;
+            result.appendChild(content);} 
+        else {
+            content.textContent = playRound(playerSelection);
+            result.appendChild(content);
 
-  game();
+            if (gameCount ==5) {
+            report.textContent = `Here's the final report after 5 rounds. Your score: ${playerScore}. Computer score: ${computerScore}. Tie: ${tieScore}.`;
+            result.appendChild(report);
+        }
+  }
+}
+
+const btn = document.querySelectorAll('[class=choice]');
+const result = document.querySelector('#result');
+const content = document.createElement('div');
+const report = document.createElement('div');
+  let i = 1;
+  let playerScore = 0;
+  let computerScore = 0;
+  let tieScore = 0;
+  btn.forEach((button) => {
+    button.addEventListener('click', () => {
+        const btnID = button.getAttribute('id');
+        oneGame(btnID, i);
+        i++;
+    });
+});
